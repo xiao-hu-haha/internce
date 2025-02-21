@@ -1,0 +1,45 @@
+1.人寿保险风险管理相关业务库表分析文档
+寿险业务流程
+投保申请：客户向保险公司提交投保申请，提供个人信息、保险需求等。
+核保：保险公司对投保申请进行审核，评估风险，决定是否承保及确定保险费率。
+承保：若核保通过，保险公司与客户签订保险合同，客户缴纳保费，保险合同生效。
+理赔申请：在保险期间内，若发生保险事故，客户向保险公司提出理赔申请。
+理赔审核：保险公司对理赔申请进行调查和审核，决定是否赔付及赔付金额。
+赔付：若理赔审核通过，保险公司向客户支付赔付金额
+2.业务数据选择
+根据上述业务流程，选择以下业务数据：
+客户信息：姓名、年龄、性别、联系方式等。
+投保申请信息：申请日期、保险类型、保险金额等。
+核保信息：核保日期、核保结果、保险费率等。
+保险合同信息：合同生效日期、合同终止日期、保费金额等。
+理赔申请信息：申请日期、理赔金额等。
+理赔审核信息：审核日期、审核结果等。
+赔付信息：赔付日期、赔付金额等。
+3.业务库表设计
+客户表（customer）
+投保申请表（application）
+核保记录表（underwriting_record）
+保险合同表（policy）
+理赔申请表（claim_application）
+理赔审核记录表（claim_review_record）
+赔付记录表（payment_record）
+4.er 图
+customer (customer_id)
+    |
+    v
+application (application_id, customer_id)
+    |
+    v
+underwriting_record (record_id, application_id)
+    |
+    v
+policy (policy_id, application_id)
+    |
+    v
+claim_application (claim_id, policy_id)
+    |
+    v
+claim_review_record (review_id, claim_id)
+    |
+    v
+payment_record (payment_id, claim_id)
