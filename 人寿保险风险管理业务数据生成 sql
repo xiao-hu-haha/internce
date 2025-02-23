@@ -1,0 +1,105 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS life_insurance_risk_management;
+USE life_insurance_risk_management;
+
+-- 创建客户表
+CREATE TABLE IF NOT EXISTS customer (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT,
+    gender VARCHAR(10),
+    contact_info VARCHAR(100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 创建投保申请表
+CREATE TABLE IF NOT EXISTS application (
+    application_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    insurance_type VARCHAR(50),
+    sum_assured DECIMAL(10, 2),
+    application_date DATE,
+    status VARCHAR(20),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 创建核保记录表
+CREATE TABLE IF NOT EXISTS underwriting_record (
+    record_id INT AUTO_INCREMENT PRIMARY KEY,
+    application_id INT,
+    underwriter VARCHAR(50),
+    underwriting_date DATE,
+    result VARCHAR(20),
+    premium_rate DECIMAL(5, 2),
+    FOREIGN KEY (application_id) REFERENCES application(application_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 创建保险合同表
+CREATE TABLE IF NOT EXISTS policy (
+    policy_id INT AUTO_INCREMENT PRIMARY KEY,
+    application_id INT,
+    start_date DATE,
+    end_date DATE,
+    premium_amount DECIMAL(10, 2),
+    FOREIGN KEY (application_id) REFERENCES application(application_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 创建理赔申请表
+CREATE TABLE IF NOT EXISTS claim_application (
+    claim_id INT AUTO_INCREMENT PRIMARY KEY,
+    policy_id INT,
+    claim_date DATE,
+    claim_amount DECIMAL(10, 2),
+    status VARCHAR(20),
+    FOREIGN KEY (policy_id) REFERENCES policy(policy_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 创建理赔审核记录表
+CREATE TABLE IF NOT EXISTS claim_review_record (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    claim_id INT,
+    reviewer VARCHAR(50),
+    review_date DATE,
+    result VARCHAR(20),
+    FOREIGN KEY (claim_id) REFERENCES claim_application(claim_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 创建赔付记录表
+CREATE TABLE IF NOT EXISTS payment_record (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    claim_id INT,
+    payment_date DATE,
+    payment_amount DECIMAL(10, 2),
+    FOREIGN KEY (claim_id) REFERENCES claim_application(claim_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 插入客户数据
+INSERT INTO customer (name, age, gender, contact_info) VALUES
+('张三', 30, '男', '13800138000'),
+('李四', 25, '女', '13900139000');
+
+-- 插入投保申请数据
+INSERT INTO application (customer_id, insurance_type, sum_assured, application_date, status) VALUES
+(1, '定期寿险', 500000, '2025-01-01', '待审核'),
+(2, '终身寿险', 1000000, '2025-01-02', '待审核');
+
+-- 插入核保记录数据
+INSERT INTO underwriting_record (application_id, underwriter, underwriting_date, result, premium_rate) VALUES
+(1, '王五', '2025-01-03', '通过', 0.05),
+(2, '赵六', '2025-01-04', '通过', 0.06);
+
+-- 插入保险合同数据
+INSERT INTO policy (application_id, start_date, end_date, premium_amount) VALUES
+(1, '2025-01-05', '2035-01-05', 25000),
+(2, '2025-01-06', '2055-01-06', 60000);
+
+-- 插入理赔申请数据
+INSERT INTO claim_application (policy_id, claim_date, claim_amount, status) VALUES
+(1, '2025-02-01', 100000, '待审核');
+
+-- 插入理赔审核记录数据
+INSERT INTO claim_review_record (claim_id, reviewer, review_date, result) VALUES
+(1, '孙七', '2025-02-02', '通过');
+
+-- 插入赔付记录数据
+INSERT INTO payment_record (claim_id, payment_date, payment_amount) VALUES
+(1, '2025-02-03', 100000);
